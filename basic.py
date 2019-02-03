@@ -66,7 +66,7 @@ class WordsLevel(object):
             wb=xw.Book(r'高中英语单词检索词汇总表(人教版)(必修1至选修8).xlsm')
             sht=wb.sheets['Sheet1']
             sht2=wb.sheets['Sheet2']
-            WordsLevel.data=sht2.range((1,1),(WordsLevel.basicnum,4)).value
+            WordsLevel.data=sht2.range((1,1),(WordsLevel.basicnum,5)).value
             while WordsLevel.data[WordsLevel.wordnum][0]!=None:
                 WordsLevel.wordnum+=1
                 #print(WordsLevel.wordnum)
@@ -78,15 +78,16 @@ class WordsLevel(object):
         else:
             WordsLevel.Readschedule(WordsLevel)
     def Wordremember(self):
-        
         print('少侠，欢迎来到练武场，这是%d次练习，距离大成还需%d次，首先我们练习英文大典之汉英转化，请在中文后输入对应的英文，按回车键提交输入。'%(WordsLevel.day+1,WordsLevel.days-WordsLevel.day))
         for a in range(WordsLevel.daygoal):
-            b=input('%s'%WordsLevel.remeberenglishwords[WordsLevel.day][a][1])
+            b=input('%s'%WordsLevel.remeberenglishwords[WordsLevel.day][a][1]).strip()
             if  WordsLevel.Englishcompare(WordsLevel,b,WordsLevel.remeberenglishwords[WordsLevel.day][a][0])==0:
                 WordsLevel.wrongenglishwords.append(WordsLevel.remeberenglishwords[WordsLevel.day][a])
+                WordsLevel.wrongenglishwords[-1][3]=WordsLevel.day
+                WordsLevel.wrongenglishwords[-1][4]+=2
                 d=0
                 while(d!=3):
-                    c=input("招式错误，正确的是%s,再练习三遍，中间以空格相隔，按回车提交。"%WordsLevel.remeberenglishwords[WordsLevel.day][a][0])
+                    c=input("招式错误，正确的是%s,再练习三遍，中间以空格相隔，按回车提交。"%WordsLevel.remeberenglishwords[WordsLevel.day][a][0]).strip()
                     c=c.split(' ')
                     if  len(c)<3:
                         print('要练三遍不准偷懒！！！')
@@ -102,12 +103,14 @@ class WordsLevel(object):
         clear()
         print('少侠，恭喜完成英文大典之汉英转化，接下来首先我们练习英文大典之汉英转化，请在英文后输入对应的中文，按回车键提交输入。')
         for a in range(WordsLevel.daygoal):
-            b=input('%s'%WordsLevel.remeberchinesewords[WordsLevel.day][a][0])
+            b=input('%s'%WordsLevel.remeberchinesewords[WordsLevel.day][a][0]).strip()
             if  WordsLevel.Chinesecompare(WordsLevel,b,WordsLevel.remeberenglishwords[WordsLevel.day][a][1])==0:
                 WordsLevel.wrongchinesewords.append(WordsLevel.remeberchinesewords[WordsLevel.day][a])
+                WordsLevel.wrongchinesewords[-1][3]=WordsLevel.day
+                WordsLevel.wrongchinesewords[-1][4]+=2
                 d=0
                 while(d!=3):
-                    c=input("招式错误，正确的是%s,再练习三遍，中间以空格相隔，按回车提交。"%WordsLevel.remeberchinesewords[WordsLevel.day][a][1])
+                    c=input("招式错误，正确的是%s,再练习三遍，中间以空格相隔，按回车提交。"%WordsLevel.remeberchinesewords[WordsLevel.day][a][1]).strip()
                     c=c.split(' ')
                     if  len(c)<3:
                         print('要练三遍不准偷懒！！！')
@@ -119,14 +122,74 @@ class WordsLevel(object):
                         if WordsLevel.Chinesecompare(WordsLevel,c[i],WordsLevel.remeberchinesewords[WordsLevel.day][a][1])==1 :
                             d+=1
                         else:d=0
+        c=0
+        for m in range(len(WordsLevel.wrongenglishwords)):
+            if WordsLevel.day-WordsLevel.wrongenglishwords[m][3]:c=1
+        if c==1:
+            print('接下来我们需要将昨天汉英转化复习一下')
+            for m in range(len(WordsLevel.wrongenglishwords)):
+                if WordsLevel.day-WordsLevel.wrongenglishwords[m][3]>=1:
+                    b=input('%s'%WordsLevel.wrongenglishwords[m][1]).strip()
+                    if  WordsLevel.Englishcompare(WordsLevel,b,WordsLevel.wrongenglishwords[m][0])==0:
+                        WordsLevel.wrongenglishwords[m][3]=WordsLevel.day
+                        WordsLevel.wrongenglishwords[m][4]+=1
+                        d=0
+                        while(d!=3):
+                            c=input("招式错误，正确的是%s,再练习三遍，中间以空格相隔，按回车提交。"%WordsLevel.wrongenglishwords[m][0]).strip()
+                            c=c.split(' ')
+                            if  len(c)<3:
+                                print('要练三遍不准偷懒！！！')
+                                continue
+                            if  len(c)>3:
+                                print('说好了三遍，你想走火入魔？？？！！！')
+                                continue
+                            for i in range(3):
+                                if WordsLevel.Englishcompare(WordsLevel,c[i],WordsLevel.wrongenglishwords[m][0])==1:
+                                    d+=1
+                                else:d=0
+                    else:WordsLevel.wrongenglishwords[m][4]-=1
+                    if WordsLevel.wrongenglishwords[m][4]==0:
+                        WordsLevel.wrongenglishwords.pop(m)
+        c=0
+        for m in range(len(WordsLevel.wrongchinesewords)):
+            if WordsLevel.day-WordsLevel.wrongchinesewords[m][3]>=1:c=1
+        if c==1:
+            print('接下来我们需要将昨天英汉转化复习一下')
+            for i in range(len(WordsLevel.wrongchinesewords)):
+                if WordsLevel.day-WordsLevel.wrongchinesewords[m][3]>=1:
+                    b=input('%s'%WordsLevel.wrongchinesewords[i][0]).strip()
+                    if  WordsLevel.Chinesecompare(WordsLevel,b,WordsLevel.wrongchinesewords[i][1])==0:
+                        WordsLevel.wrongchinesewords[i][3]=WordsLevel.day
+                        WordsLevel.wrongchinesewords[i][4]+=1
+                        d=0
+                        while(d!=3):
+                            c=input("招式错误，正确的是%s,再练习三遍，中间以空格相隔，按回车提交。"%WordsLevel.wrongchinesewords[i][1]).strip()
+                            c=c.split(' ')
+                            if  len(c)<3:
+                                print('要练三遍不准偷懒！！！')
+                                continue
+                            if  len(c)>3:
+                                print('说好了三遍，你想走火入魔？？？！！！')
+                                continue
+                            for m in range(3):
+                                if WordsLevel.Chinesecompare(WordsLevel,c[i],WordsLevel.wrongchinesewords[i][1])==1:
+                                    d+=1
+                                else:d=0
+                    else:WordsLevel.wrongchinesewords[i][4]-=1
+                    if WordsLevel.wrongchinesewords[i][4]==0:
+                        WordsLevel.wrongchinesewords.pop(i)
+        
         WordsLevel.day+=1
-        WordsLevel.Mainmenu(WordsLevel)
+        print('恭喜少侠完成今天的试炼，距离高考大业又进了一步')
         WordsLevel.Saveschedule(WordsLevel)
+        WordsLevel.Mainmenu(WordsLevel)
     def Mainmenu(self):
         '主菜单'
         print('1.背单词')
         #a=int(input('请输入你要去的地方的方位，按回车键结束！'))
-        a=int(input('请输入你要去的地方的方位，按回车键结束！'))
+        a=input('请输入你要去的地方的方位，按回车键结束！')
+        while a and (a=='1'or a=='2'):
+            a=int(a.strip())
         if a==1:
             WordsLevel.Wordremember(WordsLevel)
     def Setremember(self):
@@ -135,6 +198,7 @@ class WordsLevel(object):
             for b in range(WordsLevel.daygoal):
                 if len(WordsLevel.data):
                     WordsLevel.remeberenglishwords[a][b]=WordsLevel.data.pop()
+                    WordsLevel.remeberenglishwords[a][b][4]=0
                 else:
                     break
         a=WordsLevel.daygoal
@@ -143,6 +207,7 @@ class WordsLevel(object):
                 WordsLevel.remeberenglishwords[WordsLevel.days-1].pop(a-1)
             a-=1
         WordsLevel.remeberchinesewords=copy.deepcopy(WordsLevel.remeberenglishwords)  
+        WordsLevel.remeberchinesewords.reverse()
     def Bookselect(self):
         '选择需要背诵的书籍'
         #wb=xw.Book(r'高中英语单词检索词汇总表(人教版)(必修1至选修8).xlsm')
@@ -171,7 +236,7 @@ class WordsLevel(object):
         '保存进度'
         file= open('parameter.pickle','wb')
         basicnum=[WordsLevel.wordnum,WordsLevel.daygoal,WordsLevel.days,WordsLevel.day]
-        alldata=[basicnum,WordsLevel.data,WordsLevel.remeberchinesewords,WordsLevel.remeberchinesewords,WordsLevel.wrongchinesewords,WordsLevel.wrongenglishwords]
+        alldata=[basicnum,WordsLevel.data,WordsLevel.remeberenglishwords,WordsLevel.remeberchinesewords,WordsLevel.wrongchinesewords,WordsLevel.wrongenglishwords]
         #print(alldata)
         pickle.dump(alldata,file)
         file.close()
