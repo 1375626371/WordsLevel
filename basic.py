@@ -7,7 +7,7 @@ def clear():os.system('cls')
 class WordsLevel(object):
     wordnum=0#总单词数
     daygoal=0#每天背诵单词数
-    basicnum=25#假定单词最大数
+    basicnum=3000#假定单词最大数
     data=[]#需要背诵的全部单词
     days=0#背诵天数
     day=0#处于第几天
@@ -78,7 +78,11 @@ class WordsLevel(object):
         else:
             WordsLevel.Readschedule(WordsLevel)
     def Wordremember(self):
-        print('少侠，欢迎来到练武场，这是%d次练习，距离大成还需%d次，首先我们练习英文大典之汉英转化，请在中文后输入对应的英文，按回车键提交输入。'%(WordsLevel.day+1,WordsLevel.days-WordsLevel.day))
+        print('少侠，欢迎来到练武场，这是%d次练习，距离大成还需%d次，首先我们练习英文大典之汉英转化,单词清单如下'%(WordsLevel.day+1,WordsLevel.days-WordsLevel.day))
+        for i in range(WordsLevel.daygoal):
+            print('%s'%WordsLevel.remeberenglishwords[WordsLevel.day][i][1],end='')
+            print('\t\t\t\t%s'%WordsLevel.remeberenglishwords[WordsLevel.day][i][0])
+        print('在中文后输入对应的英文，按回车键提交输入。')
         for a in range(WordsLevel.daygoal):
             b=input('%s'%WordsLevel.remeberenglishwords[WordsLevel.day][a][1]).strip()
             if  WordsLevel.Englishcompare(WordsLevel,b,WordsLevel.remeberenglishwords[WordsLevel.day][a][0])==0:
